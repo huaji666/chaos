@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>接口文档</title>
+    <style>
+        * {
+            margin: 0;
+            font-size: 14px;
+            font-family: "微软雅黑 Light"
+        }
+
+        li {
+            list-style: none;
+        }
+
+        .fl {
+            float: left
+        }
+
+        .w200 {
+            width: 20%
+        }
+
+        .w10 {
+            width: 100%
+        }
+
+        .w1020 {
+            width: 80%
+        }
+
+        .caidan {
+            padding: 10px;
+            border-right-style: ridge;
+            cursor: pointer;
+        }
+
+        .caidan ul {
+            padding: 0 0 0 15px;
+            display: none;
+        }
+        .caidan-item {
+            margin: 3px 0px;
+            background-color: #e0f9f7;
+            padding: 3px;
+        }
+        .form {
+            padding-left: 10px;
+            padding-top: 10px;
+            width: 79%;
+            float: left;
+            border-left-style: ridge;
+        }
+
+        .form ul {
+            padding: 0 0 0 15px;
+        }
+
+        .form-item {
+            float: left;
+            width: 100%;
+            /*margin: 5px 0;*/
+            display: none;
+        }
+
+        .form-item label {
+            float: left;
+            /*width: 80px;*/
+            text-align: right;
+        }
+
+        .form-item li {
+            float: left;
+            width: 100%;
+            margin: 5px 0;
+            /*height: 25px;*/
+            /*line-height: 25px;*/
+        }
+
+        .form-item li input {
+            float: left;
+            width: 89%;
+        }
+        #jsonShow {
+            background-color: ghostwhite;
+            margin-top: 20px;
+            /*width: 500px;*/
+            /*height: 400px;*/
+            width: 100%;
+            float: left;
+        }
+
+        #jsonShow textarea.jsoneditor-text {
+            min-height: 400px;
+            background-color: ghostwhite;
+        }
+
+        .top {
+            border-bottom-style: ridge;
+            padding-bottom: 10px;
+        }
+
+        .top li {
+            margin: 2px 0px;
+            float: left;
+            width: 25%;
+        }
+
+        .top label {
+            float: left;
+            margin-left: 5px;
+        }
+
+    </style>
+    <script src="jquery.min.js"></script>
+
+
+    <link rel="stylesheet" type="text/css" href="jsoneditor-master/dist/jsoneditor.css">
+    <script src="jsoneditor-master/dist/jsoneditor.min.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="./ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./ueditor/ueditor.all.min.js"></script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文-->
+    <script type="text/javascript" charset="utf-8" src="./ueditor/lang/zh-cn/zh-cn.js"></script>
+
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+##    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <!-- 可选的Bootstrap主题文件（一般不用引入） -->
+##    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+##    <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="w1020" style="margin: 0 auto;">
+    <div class="top">
+        <ul style="margin-top: 50px">
+            <li><input id="rootPath" type="checkbox" checked="checked">添加根目录</li>
+            <li><input id="setEditorBox" type="checkbox">使用富文本编辑</li>
+            <li><a href="doc/index.html" target="_blank">字段说明</a></li>
+            <li><label>请求后缀:</label><input id="urlPattern" type="text" value=".json"></li>
+            <li><label>时间戳:</label><input id="time" type="text" value=""></li>
+        </ul>
+        <div style="clear: both"></div>
+    </div>
+    <div class="fl w200">
+        <ul class="caidan">
+            #foreach( $entry in $form.entrySet())
+                <li>
+                    <h3 style="border-left-width: 5px;border-left-style: solid; border-left-color: lightskyblue;background-color:aliceblue; margin: 2px 0px; height: 30px;line-height: 30px;padding-left: 5px; font-size: 18px">$entry.key</h3>
+                    <ul>
+                        #foreach($item in $entry.value)
+                            <li class="caidan-item"><a href="#" name="$item.methodName">$item.methodName</a></li>
+                        #end
+                    </ul>
+
+                </li>
+            #end
+            <li class="caidan-item">类名
+                <ul>
+                    <li><a href="#">方法名称</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="form">
+        <ul>
+            #foreach( $entry in $form.entrySet())
+                #foreach($item in $entry.value)
+                    <li class="form-item">
+                        <form action="${item.url}.do" method="post">
+                            <label class="form-url" name="$item.url">$item.url</label>
+                            <ul>
+                                #foreach($p in $item.paramModels)
+                                    <li>
+                                        #if($p.desc!="")
+                                            <label style="text-align: left; width: 100%; margin-left: 10%">&nbsp;$p.desc</label>
+                                        #end
+                                        <label style="width:10%;">$p.name：</label>
+                                        <input style="padding-left: 5px" type="$p.type" name="$p.name" value=$p.def>
+                                    </li>
+                                #end
+                                <li>
+                                </li>
+                            </ul>
+                        ##                            <label style="width: 100%;text-align: left" name="$item.requestDesc">请求说明:$item.requestDesc</label>
+                        ##                            <br>
+                        ##                            <label style="width: 100%;text-align: left" name="$item.responseDesc">返回说明:$item.responseDesc</label>
+                            <br>
+
+                            <div class="fl w10">
+                                <label>提交方式:&nbsp;</label>
+                                <label><input name="postType" type="radio" value="application/json" checked="checked">application/json&nbsp;&nbsp;</label>
+                                <label><input name="postType" type="radio" value="application/x-www-form-urlencoded">application/x-www-form-urlencoded&nbsp;&nbsp;</label>
+                                <label><input name="postType" type="radio" value="multipart/form-data">multipart/form-data&nbsp;&nbsp;</label>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick="send(this)">发送请求</button>
+                        </form>
+                    </li>
+
+                #end
+            #end
+            <form>
+                <li class="form-item">
+                    <label class="form-url" name="/xxx/xxx.do">/xxx/xxx.do</label>
+                    <ul>
+                        <li>
+                            <label>参数1：</label>
+                            <input type="text" name="{0}" value="{1}">
+                            <label style="width: 400px;text-align: left;">&nbsp;说明：阿阿萨德法师分散</label>
+                        </li>
+                    </ul>
+                    <button type="button" class="btn btn-default" onclick="send(this)">发送请求</button>
+                </li>
+            </form>
+        </ul>
+        <div id="jsonShow" class="collapsed11">
+
+        </div>
+
+
+        <div style="clear: both;margin-top: 20px" id="editorBox">
+            <div>
+                <h1>富文本</h1>
+                <script id="editor" type="text/plain" style="width:100%;height:500px;"></script>
+            </div>
+            <div id="btns">
+                <div>
+                    <button onclick="getAllHtml()">获得整个html的内容</button>
+                    <button onclick="getContent()">获得内容</button>
+                    <button onclick="setContent()">写入内容</button>
+                    <button onclick="setContent(true)">追加内容</button>
+                    <button onclick="getContentTxt()">获得纯文本</button>
+                    <button onclick="getPlainTxt()">获得带格式的纯文本</button>
+                    <button onclick="hasContent()">判断是否有内容</button>
+                    <button onclick="setFocus()">使编辑器获得焦点</button>
+                    <button onmousedown="isFocus(event)">编辑器是否获得焦点</button>
+                    <button onmousedown="setblur(event)">编辑器失去焦点</button>
+
+                </div>
+                <div>
+                    <button onclick="getText()">获得当前选中的文本</button>
+                    <button onclick="insertHtml()">插入给定的内容</button>
+                    <button id="enable" onclick="setEnabled()">可以编辑</button>
+                    <button onclick="setDisabled()">不可编辑</button>
+                    <button onclick=" UE.getEditor('editor').setHide()">隐藏编辑器</button>
+                    <button onclick=" UE.getEditor('editor').setShow()">显示编辑器</button>
+                    <button onclick=" UE.getEditor('editor').setHeight(300)">设置高度为300默认关闭了自动长高</button>
+                </div>
+
+                <div>
+                    <button onclick="getLocalData()">获取草稿箱内容</button>
+                    <button onclick="clearLocalData()">清空草稿箱</button>
+                </div>
+
+            </div>
+            <div>
+                <button onclick="createEditor()">
+                    创建编辑器
+                </button>
+                <button onclick="deleteEditor()">
+                    删除编辑器
+                </button>
+            </div>
+
+            <script type="text/javascript">
+
+                //实例化编辑器
+                //建议使用工厂方法getEditor创建和引用编辑器实例，如果在某个闭包下引用该编辑器，直接调用UE.getEditor('editor')就能拿到相关的实例
+                var ue = UE.getEditor('editor');
+
+
+                function isFocus(e) {
+                    alert(UE.getEditor('editor').isFocus());
+                    UE.dom.domUtils.preventDefault(e)
+                }
+                function setblur(e) {
+                    UE.getEditor('editor').blur();
+                    UE.dom.domUtils.preventDefault(e)
+                }
+                function insertHtml() {
+                    var value = prompt('插入html代码', '');
+                    UE.getEditor('editor').execCommand('insertHtml', value)
+                }
+                function createEditor() {
+                    enableBtn();
+                    UE.getEditor('editor');
+                }
+                function getAllHtml() {
+                    alert(UE.getEditor('editor').getAllHtml())
+                }
+                function getContent() {
+                    var arr = [];
+                    arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+                    arr.push("内容为：");
+                    arr.push(UE.getEditor('editor').getContent());
+                    alert(arr.join("\n"));
+                }
+                function getPlainTxt() {
+                    var arr = [];
+                    arr.push("使用editor.getPlainTxt()方法可以获得编辑器的带格式的纯文本内容");
+                    arr.push("内容为：");
+                    arr.push(UE.getEditor('editor').getPlainTxt());
+                    alert(arr.join('\n'))
+                }
+                function setContent(isAppendTo) {
+                    var arr = [];
+                    arr.push("使用editor.setContent('欢迎使用ueditor')方法可以设置编辑器的内容");
+                    UE.getEditor('editor').setContent('欢迎使用ueditor', isAppendTo);
+                    alert(arr.join("\n"));
+                }
+                function setDisabled() {
+                    UE.getEditor('editor').setDisabled('fullscreen');
+                    disableBtn("enable");
+                }
+
+                function setEnabled() {
+                    UE.getEditor('editor').setEnabled();
+                    enableBtn();
+                }
+
+                function getText() {
+                    //当你点击按钮时编辑区域已经失去了焦点，如果直接用getText将不会得到内容，所以要在选回来，然后取得内容
+                    var range = UE.getEditor('editor').selection.getRange();
+                    range.select();
+                    var txt = UE.getEditor('editor').selection.getText();
+                    alert(txt)
+                }
+
+                function getContentTxt() {
+                    var arr = [];
+                    arr.push("使用editor.getContentTxt()方法可以获得编辑器的纯文本内容");
+                    arr.push("编辑器的纯文本内容为：");
+                    arr.push(UE.getEditor('editor').getContentTxt());
+                    alert(arr.join("\n"));
+                }
+                function hasContent() {
+                    var arr = [];
+                    arr.push("使用editor.hasContents()方法判断编辑器里是否有内容");
+                    arr.push("判断结果为：");
+                    arr.push(UE.getEditor('editor').hasContents());
+                    alert(arr.join("\n"));
+                }
+                function setFocus() {
+                    UE.getEditor('editor').focus();
+                }
+                function deleteEditor() {
+                    disableBtn();
+                    UE.getEditor('editor').destroy();
+                }
+                function disableBtn(str) {
+                    var div = document.getElementById('btns');
+                    var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+                    for (var i = 0, btn; btn = btns[i++];) {
+                        if (btn.id == str) {
+                            UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+                        } else {
+                            btn.setAttribute("disabled", "true");
+                        }
+                    }
+                }
+                function enableBtn() {
+                    var div = document.getElementById('btns');
+                    var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+                    for (var i = 0, btn; btn = btns[i++];) {
+                        UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+                    }
+                }
+
+                function getLocalData() {
+                    alert(UE.getEditor('editor').execCommand("getlocaldata"));
+                }
+
+                function clearLocalData() {
+                    UE.getEditor('editor').execCommand("clearlocaldata");
+                    alert("已清空草稿箱")
+                }
+            </script>
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+
+    $(function () {
+        var setEditorBox = $("#setEditorBox");
+        $("#editorBox").hide();
+        setEditorBox.change(function () {
+            if ($(this).is(':checked')) {
+                $("#editorBox").show();
+            } else {
+                $("#editorBox").hide();
+            }
+        })
+
+        var time = $("#time");
+        var gettime = new Date().getTime();
+        time.val(gettime)
+        $(".form input[value='time']").val(gettime)
+
+        var rootPath = $("#rootPath");
+        var urlPattern = $("#urlPattern");
+        updatePath(rootPath);
+        rootPath.change(function () {
+            updatePath(rootPath);
+        })
+        urlPattern.change(function () {
+            updatePath(rootPath)
+        })
+
+        var caidanItem = $(".caidan").find(".caidan-item");
+        var caidanTitleItem = $(".caidan").find("h3");
+        var formItem = $(".form").find(".form-item");
+
+//        caidanTitleItem.next().slideToggle();
+        caidanTitleItem.each(function (index) {
+            $(this).click(function () {
+                $(this).next().slideToggle("fast");
+            })
+        })
+        formItem.hide()
+        caidanItem.each(function (index) {
+            $(this).click(function () {
+                formItem.hide();
+                formItem.eq(index).show();
+            })
+        })
+    })
+
+
+    var container = document.getElementById('jsonShow');
+    var options = {
+        mode: 'view',
+        modes: ['text', 'view'] // allowed modes
+//        modes: ['code', 'form', 'text', 'tree', 'view'] // allowed modes
+    };
+    //    var json = {
+    //        "firstName": "John",
+    //        "lastName": "",
+    //        "age": 25,
+    //        "address": {"streetAddress": "21 2nd Street", "city": "New York", "state": "NY", "postalCode": "10021"},
+    //        "phoneNumber": [{"type": "home", "number": "212 555-1234"}, {
+    //            "type": "fax",
+    //            "number": "646 555-4567"
+    //        }, {"obj": {"type": "home", "number": "212 555-1234"}}]
+    //    };
+    var editor = new JSONEditor(container, options);
+    //    var editor = new JSONEditor(container, options, json);
+
+
+    /**
+     * 发送请求
+     * @param t
+     */
+    function send(t) {
+        var o = $(t);
+        var form = o.parent("form");
+        var postType = form.find("input[name='postType']:checked").val();
+        var url = form.find(".form-url").text();
+        var param = form.serializeObject();
+
+
+        if (postType == "application/json") {
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(param),
+                success: function (data) {
+//                var jsonStr = JSON.stringify(data);
+                    editor.set(data);
+                    editor.expandAll();
+                }, beforeSend: function (request) {
+                    request.setRequestHeader("ttw-obj", "test-api");
+                }
+            });
+        } else {
+            form.attr("action", url)
+            form.attr("encoding", postType)
+            form.attr("enctype", postType)
+            form.submit();
+        }
+    }
+
+
+    function updatePath(rootPath) {
+        var urlPattern = $("#urlPattern");
+        $(".form-url").each(function (index) {
+            var paths = location.pathname.split('/');
+            var path = location.origin;
+            if (rootPath.is(":checked")) {
+                path += "/" + paths[1];
+            } else {
+                path += paths[0];
+            }
+            $(this).text(path + $(this).attr("name") + urlPattern.val())
+            $(this).parent("form").attr("action", path + $(this).attr("name") + urlPattern.val())
+        })
+    }
+
+
+
+
+
+    /**
+     * 表单转json
+     * @returns {{}}
+     */
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name] !== undefined) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+//                o[this.name].push(this.value || '');
+                o[this.name].push(toJSON(this.value) || '');
+            } else {
+//                o[this.name] = this.value || '';
+                o[this.name] = toJSON(this.value) || '';
+            }
+        });
+        return o;
+    };
+    function toJSON(str) {
+        try  {
+           return eval("("+str+")")
+//            alert("Result:" + eval(prompt("Enter an expression:","")));
+        } catch(exception) {
+//            alert(exception);
+            console.warn(exception)
+            return str;
+        }
+
+
+//        try {
+//            return $.parseJSON(str);
+//        } catch (e) {
+//            console.error("数据格式错误！")
+//            console.error(str);
+//            return "";
+//        }
+//        if ($.parseJSON(str)==null) {
+//            return str;
+//        }
+//        return $.parseJSON(str);
+
+    }
+
+</script>
+</html>

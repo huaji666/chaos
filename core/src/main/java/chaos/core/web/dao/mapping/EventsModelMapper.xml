@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chaos.core.web.dao.EventsModelMapper" >
+  <resultMap id="BaseResultMap" type="chaos.core.web.model.EventsModel" >
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="event_count" property="eventCount" jdbcType="BIGINT" />
+  </resultMap>
+  <insert id="insertSelective" parameterType="chaos.core.web.model.EventsModel" >
+    insert into common_events
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        event_id,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+      <if test="eventCount != null" >
+        event_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+      <if test="eventCount != null" >
+        #{eventCount,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>

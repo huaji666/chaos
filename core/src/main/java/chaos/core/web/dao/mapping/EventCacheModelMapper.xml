@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chaos.core.web.dao.EventCacheModelMapper" >
+  <resultMap id="BaseResultMap" type="chaos.core.web.model.EventCacheModel" >
+    <result column="event_id" property="eventId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="unique_id" property="uniqueId" jdbcType="BIGINT" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insertSelective" parameterType="chaos.core.web.model.EventCacheModel" >
+    insert into common_event_cache
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        event_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="uniqueId != null" >
+        unique_id,
+      </if>
+      <if test="createDate != null" >
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="eventId != null" >
+        #{eventId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="uniqueId != null" >
+        #{uniqueId,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

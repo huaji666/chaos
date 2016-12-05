@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chaos.core.web.dao.ConfigModelMapper" >
+  <resultMap id="BaseResultMap" type="chaos.core.web.model.ConfigModel" >
+    <id column="key" property="key" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="chaos.core.web.model.ConfigModel" extends="BaseResultMap" >
+    <result column="value" property="value" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    key
+  </sql>
+  <sql id="Blob_Column_List" >
+    value
+  </sql>
+  <insert id="insertSelective" parameterType="chaos.core.web.model.ConfigModel" >
+    <selectKey resultType="java.lang.String" keyProperty="key" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into common_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="value != null" >
+        value,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="value != null" >
+        #{value,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="chaos.core.web.model.ConfigModel" >
+    update common_config
+    <set >
+      <if test="value != null" >
+        value = #{value,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where key = #{key,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chaos.core.web.dao.RegionModelMapper" >
+  <resultMap id="BaseResultMap" type="chaos.core.web.model.RegionModel" >
+    <id column="id" property="id" jdbcType="SMALLINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="SMALLINT" />
+    <result column="parent_id" property="parentId" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, code, parent_id
+  </sql>
+  <insert id="insertSelective" parameterType="chaos.core.web.model.RegionModel" >
+    <selectKey resultType="java.lang.Short" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into common_region
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="code != null" >
+        code,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=SMALLINT},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="chaos.core.web.model.RegionModel" >
+    update common_region
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=SMALLINT},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=SMALLINT}
+  </update>
+</mapper>
