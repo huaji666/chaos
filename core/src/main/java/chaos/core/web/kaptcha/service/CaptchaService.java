@@ -1,7 +1,10 @@
 package chaos.core.web.kaptcha.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 /**
- * ©app
+ * ©chaos
  * qq:1413221142
  * 作者：王健(wangjian)
  * 时间：2016-08-05
@@ -34,4 +37,6 @@ public interface CaptchaService {
      * 清除记录
      */
     void clear();
+
+    void getICodeImg(HttpServletRequest request, HttpServletResponse response);
 }

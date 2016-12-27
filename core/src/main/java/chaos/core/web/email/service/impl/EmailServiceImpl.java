@@ -20,13 +20,14 @@ import java.util.Map;
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
-    private JavaMailSender mailSender;//spring配置中定义
+    JavaMailSender mailSender;//spring配置中定义
+
+//    @Autowired
+//    VelocityConfigurer velocityConfigurer;//spring配置中定义
+    VelocityConfigurer velocityConfigurer = new VelocityConfigurer();
 
     @Autowired
-    private VelocityConfigurer velocityConfigurer;//spring配置中定义
-
-    @Autowired
-    private SimpleMailMessage simpleMailMessage;//spring配置中定义
+    SimpleMailMessage simpleMailMessage;//spring配置中定义
 
     /**
      * 发送模板邮件
@@ -81,11 +82,16 @@ public class EmailServiceImpl implements EmailService {
      */
     @Async
     public void emailSendText(String subject, String con, String... to) {
-        simpleMailMessage.setTo(to); //接收人
-        simpleMailMessage.setFrom(simpleMailMessage.getFrom()); //发送人,从配置文件中取得  
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(con);
-        mailSender.send(simpleMailMessage);
+        try {
+            System.out.println("async...");
+            simpleMailMessage.setTo(to); //接收人
+            simpleMailMessage.setFrom(simpleMailMessage.getFrom()); //发送人,从配置文件中取得
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(con);
+            mailSender.send(simpleMailMessage);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * © shop
  * qq:1413221142
- * 作者：王健(aupp)
+ * 作者：王健(chaos)
  * 时间：2016-02-28
  */
 public interface EmailService {

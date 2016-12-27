@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="objectMapper">
+            <bean class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+                <property name="featuresToEnable">
+                    <array>
+                        <util:constant static-field="com.fasterxml.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT"/>
+                    </array>
+                </property>
+                <property name="featuresToDisable">
+                    <array>
+                        <util:constant static-field="com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES"/>
+                    </array>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!--百度富文本上传过滤-->
+    <bean id="multipartResolver" class="chaos.core.web.context.CommonsMultiparResolver">
+        <property name="defaultEncoding" value="${file.upload.encoding}"/>
+        <property name="maxUploadSize" value="${file.upload.maxSize}"/>
+        <property name="maxInMemorySize" value="${file.upload.maxInMemorySize}"/>
+    </bean>
+
+
+    <!-- 注意:这里的参数(如用户名、密码)都是针对邮件发送者的 -->
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}"/>
+        <property name="port" value="${mail.port}"/>
+        <property name="username" value="${mail.username}"/>
+        <property name="password" value="${mail.password}"/>
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+                <prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>
+            </props>
+        </property>
+    </bean>
+    <!--邮箱配置-->
+    <bean id="simpleMailMessage" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from" value="${mail.default.from}"/>
+    </bean>
+
+    <!--p:uploadTempDir="${file.upload}${file.upload.temp}"-->
+
+    <!--配置验证码-->
+    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+        <property name="config">
+            <bean class="com.google.code.kaptcha.util.Config">
+                <constructor-arg>
+                    <props>
+                        <prop key="kaptcha.border">${kaptcha.border}</prop>
+                        <prop key="kaptcha.border.color">${kaptcha.border.color}</prop>
+                        <prop key="kaptcha.textproducer.font.color">${kaptcha.textproducer.font.color}</prop>
+                        <prop key="kaptcha.image.width">${kaptcha.image.width}</prop>
+                        <prop key="kaptcha.image.height">${kaptcha.image.height}</prop>
+                        <prop key="kaptcha.textproducer.font.size">${kaptcha.textproducer.font.size}</prop>
+                        <prop key="kaptcha.session.key">${kaptcha.session.key}</prop>
+                        <prop key="kaptcha.textproducer.char.string">${kaptcha.textproducer.char.string}</prop>
+                        <prop key="kaptcha.textproducer.char.length">${kaptcha.textproducer.char.length}</prop>
+                        <prop key="kaptcha.textproducer.font.names">${kaptcha.textproducer.font.names}</prop>
+                        <!--<prop key="kaptcha.border">yes</prop>-->
+                        <!--<prop key="kaptcha.border.color">105,179,90</prop>-->
+                        <!--<prop key="kaptcha.textproducer.font.color">blue</prop>-->
+                        <!--<prop key="kaptcha.image.width">125</prop>-->
+                        <!--<prop key="kaptcha.image.height">45</prop>-->
+                        <!--<prop key="kaptcha.textproducer.font.size">45</prop>-->
+                        <!--<prop key="kaptcha.session.key">code</prop>-->
+                        <!--<prop key="kaptcha.textproducer.char.length">4</prop>-->
+                        <!--<prop key="kaptcha.textproducer.font.params">宋体,楷体,微软雅黑</prop>-->
+                    </props>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+</beans>

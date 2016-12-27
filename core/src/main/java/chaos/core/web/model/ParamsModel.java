@@ -6,7 +6,7 @@ import chaos.core.model.BaseModel;
 
 /**
  * 这个方法主要用了接受参数没有其他功能
- * ©app
+ * ©chaos
  * qq:1413221142
  * 作者：王健(wangjian)
  * 时间：2016-08-11

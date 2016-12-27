@@ -1,6 +1,7 @@
 package chaos.core.web.db;
 
-import chaos.core.utils.constant.Constant;
+import chaos.core.utils.constant.UtilsConstant;
+import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.ibatis.jdbc.ScriptRunner;
@@ -8,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.Assert;
-import com.google.common.io.Files;
+
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +23,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 /**
- * ©app-parent
+ * ©chaos-parent
  * qq:1413221142
  * 作者：王健(wangjian)
  * 时间：2016-09-12
@@ -31,10 +32,30 @@ public class DbHelper {
 
     private static final Logger log = Logger.getLogger(DbHelper.class);
 
+    public DbHelper(ApplicationContext context) {
+
+        dataSource = context.getBean(DataSource.class);
+        this.context = context;
+        check();
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    DataSource dataSource;
+    private static DbHelper instance;
+    private ApplicationContext context;
+
     public static void init(ApplicationContext context) {
         Assert.notNull(context, "ApplicationContext 不能为空！");
+        if (instance != null) return;
+        instance = new DbHelper(context);
+    }
 
-        DataSource dataSource = context.getBean(DataSource.class);
+
+    private void check() {
+        DataSource dataSource = getDataSource();
         if (dataSource == null) {
             log.error("dataSource不可用！");
             return;
@@ -55,12 +76,12 @@ public class DbHelper {
             for (File file : files) {
                 if (file.isDirectory()) continue;
                 JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-                String name =Files.getNameWithoutExtension(file.getPath());
+                String name = Files.getNameWithoutExtension(file.getPath());
 //                String name = file.getName().substring(0, file.getName().lastIndexOf("."));
                 if (!tableExist(jdbcTemplate, name)) {
                     ScriptRunner runner = new ScriptRunner(dataSource.getConnection());
 //                    runner.runScript(Resources.getResourceAsReader(file.getPath()));
-                    runner.runScript(new InputStreamReader(new FileInputStream(file), Constant.coding.UTF8));
+                    runner.runScript(new InputStreamReader(new FileInputStream(file), UtilsConstant.coding.UTF8));
                     dataSource.getConnection().close();
                     log.info(file.getName() + " 表创建成功！");
 
@@ -71,20 +92,20 @@ public class DbHelper {
         }
     }
 
-    public static boolean dbIsConnection(DataSource dataSource) {
+    private boolean dbIsConnection(DataSource dataSource) {
 
 //        String sql = "select version()";
         Connection conn = null;
         try {
             conn = dataSource.getConnection();
-
+            log.info(conn);
             DatabaseMetaData dbmd = conn.getMetaData();
 
 //            创建了这个实例，就可以使用它的方法来获取数据库得信息。主要使用如下的方法：
 //
 //            (2) 获得当前数据库以及驱动的信息
-
-            System.out.println(dbmd.getDatabaseProductName());
+            log.info(dbmd.getDatabaseProductName() +"-"+ dbmd.getDatabaseProductVersion());
+//            System.out.println(dbmd.getDatabaseProductName());
 //            用以获得当前数据库是什么数据库。比如oracle，access等。返回的是字符串。
 //            System.out.println(dbmd.getDatabaseProductVersion());
 //            ：获得数据库的版本。返回的字符串。
@@ -109,7 +130,7 @@ public class DbHelper {
             if (conn != null) {
                 try {
                     conn.close();
-                } catch (SQLException e) {
+                } catch (SQLException ignored) {
                 }
             }
         }
@@ -123,7 +144,7 @@ public class DbHelper {
      * @return
      * @throws Exception
      */
-    public static boolean tableExist(JdbcTemplate jt, String tableName) {
+    private boolean tableExist(JdbcTemplate jt, String tableName) {
         ResultSet tabs = null;
         Connection conn = null;
         try {

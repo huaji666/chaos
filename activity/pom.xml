@@ -1,0 +1,154 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>chaos-root</artifactId>
+        <groupId>chaos</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>activity</artifactId>
+    <packaging>war</packaging>
+    <name>activity-Webapp-活动用</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <!--<version>3.8.1</version>-->
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>chaos</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <!--<type>war</type>-->
+            <classifier>jar</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>chaos</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>activity</finalName>
+
+        <plugins>
+            <!-- 合并多个war -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <!--<workDirectory>/tmp/extract_here</workDirectory>-->
+                    <!--<useCache>true</useCache>-->
+                    <overlays>
+                        <overlay>
+                            <groupId>chaos</groupId>
+                            <artifactId>core</artifactId>
+                        </overlay>
+                        <!--<overlay>-->
+                        <!--<groupId>app</groupId>-->
+                        <!--<artifactId>commons-web</artifactId>-->
+                        <!--</overlay>-->
+                        <!--<overlay>-->
+                        <!-- empty groupId/artifactId is detected as the current build -->
+                        <!-- 代表当前WAR项目，默认情况下当前WAR项目是先被拷贝的，如果要控制其顺序，则使用空的overlay -->
+                        <!-- any other overlay will be applied after the current build since they have not been configured in the overlays
+                         element -->
+                        <!--</overlay>-->
+                    </overlays>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.5</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.30</version>
+                    </dependency>
+                    <!--部署插件扩展到本地仓库-->
+                    <!--deploy:deploy-file -Dfile=./target/ttw-mybatis-generator-maven-plugin.jar -DgroupId=ttw.shop -DartifactId=mybatis-generator -Dversion=1.0 -Dpackaging=jar -Durl=http://192.168.1.100:8081/nexus/content/repositories/releases -DrepositoryId=shop-releases-->
+                    <!--<dependency>-->
+                    <!--<groupId>ttw.shop</groupId>-->
+                    <!--<artifactId>mybatis-generator</artifactId>-->
+                    <!--<version>1.1</version>-->
+                    <!--</dependency>-->
+
+                    <dependency>
+                        <groupId>chaos</groupId>
+                        <artifactId>core</artifactId>
+                        <version>1.0-SNAPSHOT</version>
+                        <type>jar</type>
+                        <classifier>jar</classifier>
+                        <!--<scope>provided</scope>-->
+                    </dependency>
+
+                    <!--<dependency>-->
+                    <!--<groupId>app</groupId>-->
+                    <!--<artifactId>commons-model</artifactId>-->
+                    <!--<version>1.0-SNAPSHOT</version>-->
+                    <!--</dependency>-->
+                </dependencies>
+                <configuration>
+                    <!--允许移动生成的文件-->
+                    <verbose>true</verbose>
+                    <!--允许覆盖生成的文件-->
+                    <overwrite>false</overwrite>
+                </configuration>
+
+            </plugin>
+
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-compiler-plugin</artifactId>-->
+            <!--<version>3.5.1</version>-->
+            <!--<configuration>-->
+            <!--<source>1.8</source>-->
+            <!--<target>1.8</target>-->
+            <!--<encoding>utf-8</encoding>-->
+            <!--<showDeprecation>true</showDeprecation>-->
+            <!--<showWarnings>true</showWarnings>-->
+            <!--<debug>true</debug>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
+
+
+            <!--tomcat-部署插件 -->
+            <!--tomcat 9 内网环境-->
+            <!--<plugin>-->
+            <!--<groupId>org.apache.tomcat.maven</groupId>-->
+            <!--<artifactId>tomcat7-maven-plugin</artifactId>-->
+            <!--<version>2.2</version>-->
+            <!--<configuration>-->
+            <!--<url>http://192.168.1.111:8080/manager/text</url>-->
+            <!--<username>admin</username>-->
+            <!--<password>admin</password>-->
+            <!--<path>/${project.artifactId}</path>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!--外网环境-->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <!--<url>http://192.168.163.128:8080/manager/text</url>-->
+
+                    <url>http://activity.guquanbox.com/manager/text</url>
+                    <username>admin</username>
+                    <password>mts!@#$%^*2016-12-23</password>
+                    <!--<path>/acitvity</path>-->
+                    <path>/${project.artifactId}</path>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
+</project>

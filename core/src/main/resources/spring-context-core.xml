@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 激活spring的注解. -->
+    <context:component-scan base-package="chaos.core.*"/>
+    <context:property-placeholder location="classpath*:*.properties" file-encoding="utf-8"/>
+    <task:annotation-driven executor="defaultExecutor"/>
+    <task:executor id="defaultExecutor" pool-size="1-5" queue-capacity="20"/>
+    <aop:aspectj-autoproxy/>
+
+    <import resource="spring-beans.xml"/>
+    <import resource="spring-mybatis.xml"/>
+    <import resource="spring-ehcache.xml"/>
+    <import resource="spring-mvc.xml"/>
+</beans>

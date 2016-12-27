@@ -460,7 +460,8 @@
         var form = o.parent("form");
         var postType = form.find("input[name='postType']:checked").val();
         var url = form.find(".form-url").text();
-        var param = form.serializeObject();
+        var param = form.serializeJson();
+//        var param = form.serializeObject();
 
 
         if (postType == "application/json") {
@@ -519,20 +520,19 @@
                     o[this.name] = [o[this.name]];
                 }
 //                o[this.name].push(this.value || '');
-                o[this.name].push(toJSON(this.value) || '');
+                o[this.name].push(toJSON(this.value));
             } else {
 //                o[this.name] = this.value || '';
-                o[this.name] = toJSON(this.value) || '';
+                o[this.name] = toJSON(this.value);
             }
         });
         return o;
     };
     function toJSON(str) {
         try  {
-           return eval("("+str+")")
-//            alert("Result:" + eval(prompt("Enter an expression:","")));
+//           return eval("("+str+")")
+           return JSON.parse(str);
         } catch(exception) {
-//            alert(exception);
             console.warn(exception)
             return str;
         }
@@ -552,5 +552,26 @@
 
     }
 
+
+
+    (function($){
+        $.fn.serializeJson=function(){
+            var serializeObj={};
+            var array=this.serializeArray();
+            var str=this.serialize();
+            $(array).each(function(){
+                if(serializeObj[this.name]){
+                    if($.isArray(serializeObj[this.name])){
+                        serializeObj[this.name].push(this.value);
+                    }else{
+                        serializeObj[this.name]=[serializeObj[this.name],toJSON(this.value)];
+                    }
+                }else{
+                    serializeObj[this.name]=toJSON(this.value);
+                }
+            });
+            return serializeObj;
+        };
+    })(jQuery);
 </script>
 </html>
