@@ -19,7 +19,7 @@
 
         <mysql.version>5.1.36</mysql.version>
         <!--<hibernate.version>4.2.2.Final</hibernate.version>-->
-        <springframework.version>4.3.4.RELEASE</springframework.version>
+        <springframework.version>4.3.18.RELEASE</springframework.version>
         <!--<spring.version>4.2.5.RELEASE</spring.version>-->
         <!--<aspectj.version>1.7.2</aspectj.version>-->
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
